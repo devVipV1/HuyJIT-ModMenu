@@ -3,7 +3,7 @@ DEBUG = 0
 FINALPACKAGE = 1
 FOR_RELEASE = 1
 THEOS_PACKAGE_SCHEME = rootless
-THEOS = /var/jb/var/mobile/theos
+# THEOS = /var/jb/var/mobile/theos
 
 include $(THEOS)/makefiles/common.mk
 
