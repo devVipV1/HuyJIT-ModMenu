@@ -1,33 +1,37 @@
-name: Build
+name: Build Rootless Tweak
 
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
+      - master
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Install Theos
-      run: |
-        git clone --recursive https://github.com/theos/theos.git $HOME/theos
-        echo "THEOS=$HOME/theos" >> $GITHUB_ENV
+      - name: Install Theos
+        uses: Randomblock1/theos-action@v1
 
-    - name: Install Dependencies
-      run: |
-        sudo apt update
-        sudo apt install -y make clang ldid zip unzip
+      - name: Verify Files
+        run: |
+          ls -la
+          find . -name "*.a"
 
-    - name: Build
-      run: |
-        make package
+      - name: Build
+        env:
+          THEOS: ${{ env.THEOS }}
+        run: |
+          make clean
+          make package FINALPACKAGE=1
 
-    - name: Upload
-      uses: actions/upload-artifact@v4
-      with:
-        name: package
-        path: packages/*.deb
+      - name: Upload DEB
+        uses: actions/upload-artifact@v4
+        with:
+          name: Rootless-DEB
+          path: packages/*.deb
